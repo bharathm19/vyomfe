@@ -1,0 +1,10 @@
+.v1{
+    border-right: 3px solid gray;
+    height: 560px;
+    width: 20%;
+    margin-top: 10px;
+    position: fixed;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}

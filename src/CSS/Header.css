@@ -1,0 +1,26 @@
+.mainHeader{
+    height: 10vh;
+    background-color: aquamarine;
+    display: flex;
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+.notification{
+    margin-top: 3vh;
+    margin-left: 80%;
+}
+
+.header{
+    margin-top: 2.5vh;
+    margin-left: 5%;
+    font-family: 'Brush Script MT', cursive;
+}
+
+.message{
+    margin-top: 3vh;
+    margin-left: 3%;
+}
