@@ -2,26 +2,25 @@ import React from 'react'
 import { Avatar, Card, CardContent, CardHeader, CardMedia, Typography } from '@mui/material';
 
 export const CardComponent = (props) => {
-
+  console.log(props)
   return (
-    <Card sx={{maxWidth: 500,justifyContent:'center',bgcolor:'gray'}}>
+    <Card sx={{minWidth: 450,maxWidth: 450,justifyContent:'center',bgcolor:'#E9EBE2', marginBottom:'10px',borderRadius:'5px'}}>
       <CardHeader 
         avatar={
           <Avatar sx={{ bgcolor: 'red' }}> R </Avatar>
         }
-        title="Username"
+        title={props.post.username}
       />
       <CardMedia
         component="img"
-        height="194"
-        image='https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg'
+        // height='fit'
+        image= {props.post.fileLink}
         alt='something'
+        sx={{borderRadius:'5px'}}
       />
       <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the mussels,
-          if you like.
+        <Typography variant="body2" color="text.primary">
+          {props.post.caption}
         </Typography>
       </CardContent>
     </Card>

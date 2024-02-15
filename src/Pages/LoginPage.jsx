@@ -31,7 +31,6 @@ function LoginPage() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     const response = await fetchPost(`http://localhost:8080/login`,formvalues);
-    console.log(response.status);
     if(response.status===200){
       try{
         // const loginResponse = await response.json();

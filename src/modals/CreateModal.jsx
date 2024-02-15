@@ -1,23 +1,16 @@
 import React , { useRef, useState }from 'react';
 import Modal from '@mui/material/Modal';
-import { Box, Button, FormControl, Input, TextField, Typography } from '@mui/material';
+import { Box, Button, FormControl, Input, TextField } from '@mui/material';
 import AWS from 'aws-sdk';
-import { fetchGet1, fetchPut } from '../utils/FetchUtils';
-import {useParams} from 'react-router-dom';
+import { fetchPut } from '../utils/FetchUtils';
 
-const defaultValues = {
-  caption: "",
-  fileLink: "",
-}
 const CreateModal = (props) => {
   const FormTemp = useRef();
-  const [file,setFile] = useState(null);
-  const [fileLink, setFileLink] = useState("");
-  const [formvalues, setFormvalues] = useState(defaultValues);
+  const [mediaFileLink, setMediaFileLink] = useState("");
   const [caption, setCaption] = useState("");
-  const [close,setClose] = useState(true);
-  const id = useParams();
-  console.log(id);
+  const [close,setClose] = useState(false);
+  const id = localStorage.getItem('id');
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -30,31 +23,31 @@ const CreateModal = (props) => {
     p: 4,
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
+    e.preventDefault();
     if(e.target.files[0]){
       const mediaFile = e.target.files[0];
-      setFile(mediaFile);
+      await upload(mediaFile);
+      setClose(true);
     }
   }
 
   const handleCaptionChange = (e) => {
-    setCaption(e.target.value);
+    e.preventDefault();
+    const value = e.target.value;
+    setCaption(value);
+    console.log(caption);
   }
   
   const handleSubmit = async (e) => {
-    await upload();
-    setFormvalues({
-      ...formvalues,
-      caption: caption,
-      fileLink: fileLink,
-    });
-    const response = await fetchPut(`http://localhost:8080/${id}/upload`,formvalues);
+    e.preventDefault();
+    const date = new Date().getTime()
+    const response = await fetchPut(`http://localhost:8080/${id}/upload`,{caption: caption, fileLink: mediaFileLink,date: date});
     console.log(response);
-    setFile(null);
     setClose(false);
   }
 
-  const upload = async () => {
+  const upload = async (mediaFile) => {
     const S3_BUCKET = 'vyommediaposts';
     const REGION = 'us-east-1';
   
@@ -71,14 +64,13 @@ const CreateModal = (props) => {
 
   const pros = {
     Bucket: S3_BUCKET,
-    Key: file.name,
-    Body: file,
+    Key: mediaFile.name,
+    Body: mediaFile,
   };
 
   const upload = s3
       .putObject(pros)
       .on("httpUploadProgress", (evt) => {
-        // File uploading progress
         console.log(
           "Uploading " + parseInt((evt.loaded * 100) / evt.total) + "%"
         );
@@ -87,19 +79,18 @@ const CreateModal = (props) => {
 
       const resp = await upload.then((err, data) => {
         console.log(JSON.stringify(err));
-        setFileLink("https://vyommediaposts.s3.amazonaws.com/"+file.name);
-        console.log(fileLink);
+        setMediaFileLink("https://vyommediaposts.s3.amazonaws.com/"+mediaFile.name);
       });
       
 }
   return (
     <div>
         <Modal
-            open = {props.open}
-            onClose={props.close || close}
+            open = {props.open || close}
+            onClose={props.close}
         >
           <Box sx={style}>
-            <form>
+            <form onSubmit={handleSubmit}>
               <FormControl ref={FormTemp}>
                 <Input
                       accept='image/*'
@@ -110,10 +101,10 @@ const CreateModal = (props) => {
                       onChange={handleImageChange}
                     />
                   <TextField id='caption' name='caption' label='Caption' onChange={handleCaptionChange}></TextField>
-                <Button variant='contained' color='success' onClick={handleSubmit}>Upload</Button>
+                <Button variant='contained' color='success' type='submit'>Upload</Button>
               </FormControl>
             </form>
-            {fileLink && <img src={fileLink} alt='ig'/>}
+            {mediaFileLink && <img src={mediaFileLink} alt='ig'/>}
           </Box>
         </Modal>
     </div>

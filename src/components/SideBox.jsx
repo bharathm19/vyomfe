@@ -12,10 +12,12 @@ import '../CSS/SideBox.css'
 import CreateModal from '../modals/CreateModal';
 
 
-function SideBox() {
+function SideBox(props) {
     const [open,setOpen] = useState(false);
-    const handleClose = () => setOpen(false);
-    const handleOpen = () => setOpen(true);
+    const handleClose = () => {setOpen(false); 
+        props.onUpload(true);}
+    const handleOpen = () => {setOpen(true); props.onUpload(false);}
+
 
   return (
     <div className='v1'>

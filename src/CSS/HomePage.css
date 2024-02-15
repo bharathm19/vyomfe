@@ -1,0 +1,7 @@
+.postDiv{
+    float:left;
+    display: flex;
+    justify-content: center;
+    margin-left: 500px;
+    margin-top: 20px;
+}
